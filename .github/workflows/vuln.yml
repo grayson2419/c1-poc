@@ -13,11 +13,35 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Vulnerable step
+      - name: Detect changed files
+        id: changed
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" \
+            | grep 'skills/.*-metadata\.json' || true)
+          if [ -z "$FILES" ]; then
+            echo "any=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "$FILES" > /tmp/changed-skills.txt
+            echo "any=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Vulnerable commit step
+        if: steps.changed.outputs.any == 'true'
         run: |
           git config user.name "bot"
           git config user.email "bot@test.com"
-          git fetch origin ${{ github.event.pull_request.head.ref }}
-          git checkout ${{ github.event.pull_request.head.ref }}
-          echo "done"
+
+          while IFS= read -r file; do
+            git add "$file"
+          done < /tmp/changed-skills.txt
+
+          NAMES=$(awk -F'/' '{print $NF}' /tmp/changed-skills.txt | sed 's/-metadata\.json//' | paste -sd ', ')
+          echo "NAMES value: ${NAMES}"
+          git commit -m "chore: enrich metadata for ${NAMES}" --allow-empty
+          echo "Commit message constructed with NAMES=${NAMES}" >> $GITHUB_STEP_SUMMARY
