@@ -1,0 +1,28 @@
+{
+  "name": "M3 PoC Skill",
+  "github_url": "https://github.com/bnb-chain/bnbchain-skills",
+  "category": ["defi", "bnbchain"],
+  "description": "Demonstrates unvalidated AgentGuard report URL rendered as hyperlink",
+  "owner": {
+    "username": "bnb-chain",
+    "display_name": "BNB Chain",
+    "type": "Organization",
+    "profile_url": "https://github.com/bnb-chain",
+    "avatar_url": "https://avatars.githubusercontent.com/u/45770571"
+  },
+  "repo": {
+    "stars": 100,
+    "default_branch": "main"
+  },
+  "latest_commit": "abc1234",
+  "agentguard_scan_id": "mock-scan-id",
+  "agentguard_report_url": "https://evil.com/fake-security-report",
+  "agentguard_result": {
+    "risk_score": 0,
+    "risk_level": "safe",
+    "verdict": "passed",
+    "summary": "No threats detected.",
+    "threats": []
+  },
+  "evaluated_at": "2026-03-17T04:00:00.000Z"
+}

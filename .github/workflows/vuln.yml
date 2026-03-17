@@ -48,18 +48,22 @@ jobs:
             }).filter(Boolean);
 
             const rows = skills.map(s => {
+              const guard = s.agentguard_report_url
+                ? `[View report](${s.agentguard_report_url})`
+                : '⏳ pending';
               return [
                 `**[${s.name}](${s.github_url})**`,
                 (s.category ?? []).join(', '),
                 s.description,
+                guard,
               ].join(' | ');
             });
 
             const body = [
               '## Skill Enrichment Preview',
               '',
-              'Skill | Category | Description',
-              '------|----------|------------',
+              'Skill | Category | Description | AgentGuard',
+              '------|----------|-------------|----------',
               ...rows,
             ].join('\n');
 
